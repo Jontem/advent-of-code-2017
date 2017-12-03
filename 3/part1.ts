@@ -10,11 +10,11 @@ function createSpiralMatrix(matrix: number[][]): number[][] {
   let y = rowsAndCols - 1;
   let numberToFill = matrix.length * matrix.length;
   while (true) {
-    if (!matrix.some(r => r.some(c => c === -1))) {
+    const next = chooseNext(matrix, x, y);
+    if (!next) {
       break;
     }
 
-    const next = chooseNext(matrix, x, y);
     x = next.x;
     y = next.y;
     matrix[y][x] = numberToFill;
@@ -28,7 +28,7 @@ function chooseNext(
   matrix: number[][],
   currX: number,
   currY: number
-): { x: number; y: number } {
+): { x: number; y: number } | undefined {
   if (
     matrix[currY][currX - 1] === -1 &&
     (!matrix[currY + 1] || matrix[currY + 1][currX] !== -1)
@@ -53,10 +53,8 @@ function chooseNext(
       x: currX
     };
   }
-  console.log(currX);
-  console.log(currY);
-  printMatrix(matrix);
-  throw new Error("Shouldn't get here");
+
+  return undefined;
 }
 
 function createEmptyMatrix(length: number): number[][] {
