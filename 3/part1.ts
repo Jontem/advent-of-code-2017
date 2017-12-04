@@ -1,3 +1,5 @@
+export {};
+
 function printMatrix(matrix: number[][]) {
   matrix.forEach(r => {
     console.log(r.join(", "));
