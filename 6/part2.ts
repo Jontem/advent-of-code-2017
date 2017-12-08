@@ -5,13 +5,14 @@ const input = `14	0	15	12	11	11	3	5	1	6	8	4	9	1	8	4`;
 const start = input.split("\t").map(v => parseInt(v, 10));
 
 function go(
-  states: Set<string>,
+  states: Map<string, number>,
   current: ReadonlyArray<number>,
   iterationCount: number
 ): number {
   while (true) {
     const currentKey = current.join(",");
     if (states.has(currentKey)) {
+      console.log(iterationCount - states.get(currentKey)!);
       return iterationCount;
     }
 
@@ -22,10 +23,11 @@ function go(
 
     const newKey = distributed.join(",");
     if (currentKey !== newKey) {
-      states.add(currentKey);
+      states.set(currentKey, iterationCount++);
+    } else {
+      iterationCount++;
     }
     current = distributed;
-    iterationCount++;
   }
 }
 
@@ -46,4 +48,4 @@ function distribute(arr: ReadonlyArray<number>, index: number) {
   return sortedBack;
 }
 
-console.log(go(new Set(), start, 0));
+console.log(go(new Map(), start, 0));
