@@ -8,12 +8,15 @@ function go(
   states: Map<string, number>,
   current: ReadonlyArray<number>,
   iterationCount: number
-): number {
+): { redistCycles: number; cycles: number } {
   while (true) {
     const currentKey = current.join(",");
     if (states.has(currentKey)) {
-      console.log(iterationCount - states.get(currentKey)!);
-      return iterationCount;
+      console.log();
+      return {
+        redistCycles: iterationCount,
+        cycles: iterationCount - states.get(currentKey)!
+      };
     }
 
     const index = iterationCount % current.length;
