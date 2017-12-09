@@ -4,11 +4,6 @@ import { input } from "./input";
 // const input = `{{{},{},{{}}}}`;
 // const input = `{}`;
 
-interface Group {
-  readonly value: number;
-  readonly children: ReadonlyArray<Group>;
-}
-
 function cleanup(input: string): string {
   return input
     .replace(/!./g, "")
