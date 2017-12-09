@@ -1,7 +1,6 @@
 export {};
 
 type Matrix = Array<Array<number>>;
-type Direction = "LEFT" | "TOP" | "BOTTOM" | "RIGHT";
 
 function printMatrix(matrix: Matrix) {
   matrix.forEach(r => {
@@ -29,79 +28,104 @@ function emptyRow(length: number): Array<number> {
   return row;
 }
 
-function fillRight(matrix: Matrix, x: number, y: number) {
-  const left = matrix[y][x - 1] || 0;
-  const topLeft = (matrix[y + 1] && matrix[y + 1][x - 1]) || 0;
-  const sum = left + topLeft;
-  matrix[y][x] = sum;
+function getNext(
+  x: number,
+  y: number,
+  currentDirection: Direction
+): { x: number; y: number } {
+  switch (currentDirection) {
+    case "RIGHT": {
+      return { x: x + 1, y };
+    }
+    case "TOP": {
+      return { x, y: y - 1 };
+    }
+    case "BOTTOM": {
+      return { x, y: y + 1 };
+    }
+    case "LEFT": {
+      return { x: x - 1, y };
+    }
+  }
 }
 
-function fillTop(matrix: Matrix, x: number, y: number) {
+function nextDirection(currentDirection: Direction) {
+  switch (direction) {
+    case "RIGHT": {
+      return "TOP";
+    }
+    case "TOP": {
+      return "LEFT";
+    }
+    case "LEFT": {
+      return "BOTTOM";
+    }
+    case "BOTTOM": {
+      return "RIGHT";
+    }
+  }
+}
+
+function getValue(matrix: Matrix, x: number, y: number): number {
+  const right = (matrix[y] && matrix[y][x + 1]) || 0;
+  const rightTop = (matrix[y - 1] && matrix[y - 1][x + 1]) || 0;
+  const top = (matrix[y - 1] && matrix[y - 1][x]) || 0;
+  const topLeft = (matrix[y - 1] && matrix[y - 1][x - 1]) || 0;
+  const left = (matrix[y] && matrix[y][x - 1]) || 0;
   const bottomLeft = (matrix[y + 1] && matrix[y + 1][x - 1]) || 0;
   const bottom = (matrix[y + 1] && matrix[y + 1][x]) || 0;
-  const sum = bottomLeft + bottom;
-  matrix[y][x] = sum;
+  const bottomRight = (matrix[y + 1] && matrix[y + 1][x + 1]) || 0;
+
+  return (
+    right + rightTop + top + topLeft + left + bottomLeft + bottom + bottomRight
+  );
 }
 
-function fillLeft(matrix: Matrix, x: number, y: number) {}
+type Direction = "LEFT" | "RIGHT" | "TOP" | "BOTTOM";
 
-function fillPos(matrix: Matrix, direction: Direction, x: number, y: number) {
-  console.log(`fillPos: x: ${x}, y: ${y}`);
-  switch (direction) {
-    case "RIGHT": {
-      fillRight(matrix, x, y);
-      break;
-    }
-    case "TOP": {
-      fillTop(matrix, x, y);
-      break;
-    }
-    case "LEFT": {
-      const right = (matrix[y][x + 1]) || 0;
-      const bottom = (matrix[y - 1] && matrix[y - 1][x]) || 0;
-      const bottomRight  = (matrix[y - 1] && matrix[y - 1][x]) || 0;
-      //   console.log(`bottomLeft: ${bottomLeft}`);
-      //   console.log(`bottom: ${bottom}`);
-      const sum = bottomLeft + bottom;
-      matrix[y][x] = sum;
-      break;
-    }
-  }
-}
+const input = 312051;
 
-function goNext(
-  matrix: Matrix,
-  direction: Direction,
-  currX: number,
-  currY: number
-) {
-  console.log(direction);
-  switch (direction) {
-    case "RIGHT": {
-      console.log("currY: " + currY);
-      fillPos(matrix, direction, currX + 1, currY);
-      printMatrix(matrix);
-      goNext(matrix, "TOP", currX + 1, currY);
-      break;
-    }
-    case "TOP": {
-      fillPos(matrix, direction, currX, currY - 1);
-      goNext(matrix, "LEFT", currX, currY - 1);
-      break;
-    }
-    case "LEFT": {
-      fillPos(matrix, direction, currX - 1, currY);
-      goNext(matrix, "BOTTOM", currX - 1, currY);
-    }
-  }
-}
-
-const matrix = createEmptyMatrix(23);
+const matrix = createEmptyMatrix(input);
 
 const middle = Math.ceil(matrix.length / 2) - 1;
-console.log(middle);
 
-matrix[middle][middle] = 1;
-goNext(matrix, "RIGHT", middle, middle);
+let x = middle;
+let y = middle;
 
-printMatrix(matrix);
+let iteration = 0;
+let stepsBeforeTurn = 1;
+let sinceTurn = 0;
+let direction: Direction = "RIGHT";
+matrix[y][x] = 1;
+x++;
+while (true) {
+  if (matrix[matrix.length - 1][matrix.length - 1] > 0) {
+    break;
+  }
+
+  const value = getValue(matrix, x, y);
+  if (value > input) {
+    console.log("Value: ", value);
+    break;
+  }
+  matrix[y][x] = value;
+  sinceTurn++;
+
+  // printMatrix(matrix);
+
+  if (sinceTurn < stepsBeforeTurn) {
+    const next = getNext(x, y, direction);
+    x = next.x;
+    y = next.y;
+  } else {
+    direction = nextDirection(direction);
+    const next = getNext(x, y, direction);
+    x = next.x;
+    y = next.y;
+    if (direction === "LEFT" || direction === "RIGHT") {
+      stepsBeforeTurn++;
+    }
+    sinceTurn = 0;
+  }
+  iteration++;
+}
