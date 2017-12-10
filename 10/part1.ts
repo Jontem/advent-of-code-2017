@@ -1,9 +1,9 @@
-const input = `3, 4, 1, 5`;
+// const input = `3, 4, 1, 5`;
 // const input = `3, 4, 1`;
 // const input = `88`;
-// import { input } from "./input";
-// const listLength = 256;
-const listLength = 5;
+import { input } from "./input";
+const listLength = 256;
+// const listLength = 5;
 
 type ReverseMap = Map<number, number>;
 
@@ -19,7 +19,7 @@ function generateList(length: number): Array<number> {
 function getValues(list: ReadonlyArray<number>, start: number, length: number) {
   const end = start + length;
   if (end < list.length) {
-    const values = list.slice(start, length);
+    const values = list.slice(start, start + length);
     return values;
   }
   const elementsToEnd = list.length - start;
@@ -61,6 +61,12 @@ function replaceValues(
   return replaceList;
 }
 
+function reverseList(list: Array<number>, index: number, inputLength: number) {
+  const reverseMap = getReverseMap(list, index, inputLength);
+  //   console.log("reverseMap", reverseMap.entries());
+  return replaceValues(list, reverseMap);
+}
+
 const inputLengths: ReadonlyArray<number> = input
   .split(",")
   .map(v => parseInt(v, 10));
@@ -80,9 +86,7 @@ for (const inputLength of inputLengths) {
   //     continue;
   //   }
 
-  const reverseMap = getReverseMap(list, index, inputLength);
-  //   console.log("reverseMap", reverseMap.entries());
-  list = replaceValues(list, reverseMap);
+  list = reverseList(list, index, inputLength);
   //   console.log("list", list);
   index = (index + inputLength + skip) % list.length;
   skip++;
@@ -93,3 +97,6 @@ console.log("1: ", list[0]);
 console.log("2: ", list[1]);
 
 console.log("product", list[0] * list[1]);
+
+// console.log(generateList(5), reverseList(generateList(5), 0, 2));
+// console.log(generateList(5), reverseList(generateList(5), 1, 2));
