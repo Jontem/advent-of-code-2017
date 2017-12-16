@@ -28,7 +28,6 @@ console.log(
     Math.abs(endCube.y - startCord.y) +
     Math.abs(endCube.z - endCube.z)
 );
-// Math.abs(dataPort.x - accessPort.x) + Math.abs(dataPort.y - accessPort.y)
 
 function getPos(cube: Cube, direction: Direction): Cube {
   switch (direction) {

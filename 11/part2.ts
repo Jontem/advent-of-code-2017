@@ -18,10 +18,6 @@ const startCord: Cube = {
   y: 0,
   z: 0
 };
-/* const endCube = turns.reduce(
-  (soFar, direction) => getPos(soFar, direction),
-  startCord
-); */
 
 let endCube = startCord;
 let maxDistance = 0;
@@ -35,7 +31,6 @@ for (let i = 0; i < turns.length; i++) {
 }
 
 console.log(maxDistance);
-// Math.abs(dataPort.x - accessPort.x) + Math.abs(dataPort.y - accessPort.y)
 
 function getPos(cube: Cube, direction: Direction): Cube {
   switch (direction) {
