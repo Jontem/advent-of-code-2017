@@ -10,7 +10,6 @@ function createGenerator(factor: number, multiple: number) {
   };
 }
 
-// Example
 const genA = createGenerator(16807, 4);
 const genB = createGenerator(48271, 8);
 
