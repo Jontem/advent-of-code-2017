@@ -23,18 +23,14 @@ let genBLastValue = 814;
 
 let pairs = 0;
 
-declare var process: any;
-
+const bitMask = Math.pow(2, 16) - 1;
+console.time("run");
 for (let i = 0; i < 5000000; i++) {
   genALastValue = genA(genALastValue);
   genBLastValue = genB(genBLastValue);
-
-  if (
-    genALastValue.toString(2).substr(-16) ===
-    genBLastValue.toString(2).substr(-16)
-  ) {
+  if ((genALastValue & bitMask) === (genBLastValue & bitMask)) {
     pairs++;
   }
 }
-
+console.timeEnd("run");
 console.log(pairs);
