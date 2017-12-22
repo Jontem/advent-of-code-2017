@@ -1,14 +1,18 @@
 export {};
-
-function createGenerator(factor: number) {
+function createGenerator(factor: number, multiple: number) {
   return (prevValue: number) => {
-    return (prevValue * factor) % 2147483647;
+    while (true) {
+      prevValue = (prevValue * factor) % 2147483647;
+      if (prevValue % multiple === 0) {
+        return prevValue;
+      }
+    }
   };
 }
 
 // Example
-const genA = createGenerator(16807);
-const genB = createGenerator(48271);
+const genA = createGenerator(16807, 4);
+const genB = createGenerator(48271, 8);
 
 // Example
 // let genALastValue = 65;
@@ -20,7 +24,9 @@ let genBLastValue = 814;
 
 let pairs = 0;
 
-for (let i = 0; i < 40000000; i++) {
+declare var process: any;
+
+for (let i = 0; i < 5000000; i++) {
   genALastValue = genA(genALastValue);
   genBLastValue = genB(genBLastValue);
 
